@@ -1,0 +1,33 @@
+{
+  "name": "orpheon-sign",
+  "version": "1.0.0",
+  "description": "SaaS for electronic document workflow with JWT authentication",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "generate-keys": "node keys/generate-keys.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ejs": "^3.1.9",
+    "jose": "^5.2.0",
+    "morgan": "^1.10.0",
+    "cors": "^2.8.5",
+    "cookie-parser": "^1.4.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": [
+    "jwt",
+    "authentication",
+    "document-workflow",
+    "saas"
+  ],
+  "author": "Orphéon Sign Team",
+  "license": "MIT"
+}

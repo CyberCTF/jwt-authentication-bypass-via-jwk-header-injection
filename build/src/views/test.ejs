@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JWT Test Interface - Orphéon Sign</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="glass-dark border-b border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">OS</span>
+                        </div>
+                        <span class="text-xl font-bold">Orphéon Sign - JWT Test</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-white mb-2">JWT Authentication Test Interface</h1>
+                <p class="text-gray-400">Test the JWT authentication and JWK header injection vulnerability</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Login Section -->
+                <div class="glass rounded-xl p-6">
+                    <h2 class="text-xl font-semibold text-white mb-4">1. Login</h2>
+                    <form id="loginForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                            <input id="email" name="email" type="email" required 
+                                   class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white"
+                                   placeholder="admin@orpheon.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                            <input id="password" name="password" type="password" required 
+                                   class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white"
+                                   placeholder="admin123">
+                        </div>
+                        <button type="submit" 
+                                class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                            Login
+                        </button>
+                    </form>
+                    <div class="mt-4 text-sm text-gray-400">
+                        <p>Demo credentials:</p>
+                        <p>• Employee: john.doe@orpheon.com / password123</p>
+                        <p>• Admin: admin@orpheon.com / admin123</p>
+                    </div>
+                </div>
+
+                <!-- Token Display -->
+                <div class="glass rounded-xl p-6">
+                    <h2 class="text-xl font-semibold text-white mb-4">2. Current Token</h2>
+                    <div id="tokenDisplay" class="bg-gray-800 rounded-lg p-4 mb-4">
+                        <p class="text-gray-400">No token loaded</p>
+                    </div>
+                    <button onclick="clearToken()" 
+                            class="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                        Clear Token
+                    </button>
+                </div>
+            </div>
+
+            <!-- Test Actions -->
+            <div class="glass rounded-xl p-6 mt-8">
+                <h2 class="text-xl font-semibold text-white mb-4">3. Test Actions</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button onclick="testDocuments()" 
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                        Test /documents
+                    </button>
+                    <button onclick="testAdmin()" 
+                            class="bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                        Test /admin
+                    </button>
+                    <button onclick="testExport()" 
+                            class="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                        Test /admin/export/env
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="glass rounded-xl p-6 mt-8">
+                <h2 class="text-xl font-semibold text-white mb-4">4. Results</h2>
+                <div id="results" class="bg-gray-800 rounded-lg p-4 min-h-32">
+                    <p class="text-gray-400">Test results will appear here...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-dark border-t border-gray-700 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-gray-400">
+                <p>&copy; 2024 Orphéon Sign. All rights reserved.</p>
+                <p class="text-sm mt-2">JWT Authentication Test Interface</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentToken = null;
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                email: formData.get('email'),
+                password: formData.get('password')
+            };
+
+            try {
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    currentToken = result.token;
+                    updateTokenDisplay();
+                    addResult('✅ Login successful! Token stored.', 'success');
+                } else {
+                    addResult(`❌ Login failed: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Network error: ${error.message}`, 'error');
+            }
+        });
+
+        function updateTokenDisplay() {
+            const display = document.getElementById('tokenDisplay');
+            if (currentToken) {
+                const shortToken = currentToken.substring(0, 50) + '...';
+                display.innerHTML = `
+                    <p class="text-green-400 mb-2">Token loaded:</p>
+                    <code class="text-sm text-gray-300 break-all">${shortToken}</code>
+                `;
+            } else {
+                display.innerHTML = '<p class="text-gray-400">No token loaded</p>';
+            }
+        }
+
+        function clearToken() {
+            currentToken = null;
+            updateTokenDisplay();
+            addResult('🗑️ Token cleared', 'info');
+        }
+
+        function getAuthHeaders() {
+            if (!currentToken) {
+                throw new Error('No token available. Please login first.');
+            }
+            return {
+                'Authorization': `Bearer ${currentToken}`,
+                'Content-Type': 'application/json'
+            };
+        }
+
+        async function testDocuments() {
+            try {
+                const response = await fetch('/documents', {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    addResult('✅ /documents: Access granted', 'success');
+                } else {
+                    const error = await response.json();
+                    addResult(`❌ /documents: ${error.error} (${response.status})`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ /documents: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAdmin() {
+            try {
+                const response = await fetch('/admin', {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    addResult('✅ /admin: Access granted', 'success');
+                } else {
+                    const error = await response.json();
+                    addResult(`❌ /admin: ${error.error} (${response.status})`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ /admin: ${error.message}`, 'error');
+            }
+        }
+
+        async function testExport() {
+            try {
+                const response = await fetch('/admin/export/env', {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const content = await response.text();
+                    addResult(`✅ /admin/export/env: Secret retrieved!<br><code class="text-xs">${content}</code>`, 'success');
+                } else {
+                    const error = await response.json();
+                    addResult(`❌ /admin/export/env: ${error.error} (${response.status})`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ /admin/export/env: ${error.message}`, 'error');
+            }
+        }
+
+        function addResult(message, type) {
+            const results = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            const colorClass = type === 'success' ? 'text-green-400' : 
+                              type === 'error' ? 'text-red-400' : 'text-blue-400';
+            
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `mb-2 p-2 rounded ${colorClass}`;
+            resultDiv.innerHTML = `<span class="text-gray-500 text-xs">[${timestamp}]</span> ${message}`;
+            
+            results.appendChild(resultDiv);
+            results.scrollTop = results.scrollHeight;
+        }
+
+        // Initialize
+        updateTokenDisplay();
+    </script>
+</body>
+</html>
