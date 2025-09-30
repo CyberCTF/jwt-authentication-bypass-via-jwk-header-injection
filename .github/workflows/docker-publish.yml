@@ -30,7 +30,7 @@ jobs:
       - name: Run tests
         run: |
           cd test
-          python -m pytest main.py -v
+          python -m pytest . -v
 
   build-and-push:
     needs: test
