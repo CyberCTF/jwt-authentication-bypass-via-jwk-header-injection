@@ -1,10 +1,10 @@
+name: jwt-authentication-bypass-via-jwk-header-injection
 version: '3.8'
 
 services:
   orpheon-sign:
-    build:
-      context: ..
-      dockerfile: deploy/Dockerfile
+    container_name: jwt-authentication-bypass-via-jwk-header-injection
+    image: cyberctf/jwt-authentication-bypass-via-jwk-header-injection:latest
     ports:
       - "3206:3206"
     environment:

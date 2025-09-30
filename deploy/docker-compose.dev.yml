@@ -1,0 +1,29 @@
+name: jwt-authentication-bypass-via-jwk-header-injection
+version: '3.8'
+
+services:
+  orpheon-sign:
+    container_name: jwt-authentication-bypass-via-jwk-header-injection
+    build:
+      context: ..
+      dockerfile: build/Dockerfile
+    ports:
+      - "3206:3206"
+    environment:
+      - NODE_ENV=development
+      - PORT=3206
+    volumes:
+      # Volume pour le hot-reload en développement
+      - ../build/app/src:/app/src:ro
+      - ../build/app/keys:/app/keys:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3206/', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.orpheon-sign-dev.rule=Host(`orpheon-sign-dev.local`)"
+      - "traefik.http.services.orpheon-sign-dev.loadbalancer.server.port=3206"
