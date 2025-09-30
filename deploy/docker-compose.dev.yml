@@ -1,5 +1,4 @@
 name: jwt-authentication-bypass-via-jwk-header-injection
-version: '3.8'
 
 services:
   orpheon-sign:
