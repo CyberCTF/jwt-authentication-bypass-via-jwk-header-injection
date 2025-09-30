@@ -4,7 +4,7 @@ services:
   orpheon-sign:
     container_name: jwt-authentication-bypass-via-jwk-header-injection
     build:
-      context: .
+      context: ..
       dockerfile: build/Dockerfile
     ports:
       - "3206:3206"
@@ -13,8 +13,8 @@ services:
       - PORT=3206
     volumes:
       # Volume pour le hot-reload en développement
-      - ./build/app/src:/app/src:ro
-      - ./build/app/keys:/app/keys:ro
+      - ../build/app/src:/app/src:ro
+      - ../build/app/keys:/app/keys:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:3206/', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
