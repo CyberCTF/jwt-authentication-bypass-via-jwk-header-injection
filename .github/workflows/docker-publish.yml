@@ -27,10 +27,20 @@ jobs:
           cd test
           pip install -r requirements.txt
       
+      - name: Start application
+        run: |
+          docker compose -f deploy/docker-compose.dev.yml up -d
+          sleep 30  # Wait for application to start
+      
       - name: Run tests
         run: |
           cd test
           python -m pytest . -v
+      
+      - name: Stop application
+        if: always()
+        run: |
+          docker compose -f deploy/docker-compose.dev.yml down
 
   build-and-push:
     needs: test
