@@ -5,7 +5,7 @@ services:
     container_name: jwt-authentication-bypass-via-jwk-header-injection
     build:
       context: ..
-      dockerfile: ./build/Dockerfile
+      dockerfile: build/Dockerfile
     ports:
       - "3206:3206"
     environment:

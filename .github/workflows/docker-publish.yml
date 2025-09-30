@@ -27,11 +27,19 @@ jobs:
           cd test
           pip install -r requirements.txt
       
+      - name: Install curl
+        run: sudo apt-get update && sudo apt-get install -y curl
+      
       - name: Start application
         run: |
           docker compose -f deploy/docker-compose.dev.yml up -d --build
-          # Wait for application to be healthy
-          timeout 60 bash -c 'until docker compose -f deploy/docker-compose.dev.yml ps | grep -q "healthy"; do sleep 2; done'
+          echo "Waiting for application to start..."
+          # Wait for container to be running
+          timeout 30 bash -c 'until docker compose -f deploy/docker-compose.dev.yml ps | grep -q "Up"; do sleep 2; done'
+          echo "Container is running, waiting for health check..."
+          # Wait for application to respond to HTTP requests
+          timeout 60 bash -c 'until curl -f http://localhost:3206/ >/dev/null 2>&1; do sleep 3; done'
+          echo "Application is ready!"
       
       - name: Run tests
         run: |

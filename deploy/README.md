@@ -14,7 +14,7 @@ git clone <repository-url>
 cd jwt-authentication-bypass-via-jwk-header-injection
 
 # Start the application
-docker-compose -f deploy/docker-compose.yml up --build
+docker compose -f docker-compose.yml up -d
 
 # Access the application
 open http://localhost:3206
@@ -24,7 +24,7 @@ open http://localhost:3206
 
 ```bash
 # Build the image
-docker build -f deploy/Dockerfile -t orpheon-sign .
+docker build -f build/Dockerfile -t orpheon-sign .
 
 # Run the container
 docker run -p 3206:3206 orpheon-sign
@@ -61,7 +61,8 @@ Run the automated tests to verify the vulnerability:
 pip install -r test/requirements.txt
 
 # Run tests (ensure the application is running)
-python test/test_app.py
+cd test
+python -m pytest . -v
 ```
 
 ## Architecture
