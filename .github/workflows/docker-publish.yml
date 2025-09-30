@@ -30,7 +30,8 @@ jobs:
       - name: Start application
         run: |
           docker compose -f deploy/docker-compose.dev.yml up -d --build
-          sleep 30  # Wait for application to start
+          # Wait for application to be healthy
+          timeout 60 bash -c 'until docker compose -f deploy/docker-compose.dev.yml ps | grep -q "healthy"; do sleep 2; done'
       
       - name: Run tests
         run: |
